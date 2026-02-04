@@ -1,0 +1,12 @@
+package Utils;
+
+import java.util.Scanner;
+
+public class InputUtil {
+
+    public static final Scanner sc = new Scanner(System.in);
+
+    private InputUtil() {
+       
+    }
+}

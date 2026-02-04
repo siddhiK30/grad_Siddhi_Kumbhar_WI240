@@ -1,28 +1,11 @@
 package DAO;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-
-import Utils.DBConnection;
-
-public class UserDAO {
-
-   
-    public boolean ownerExists(int ownerId) throws Exception {
-
-        Connection con = DBConnection.getConnection();
-
-        PreparedStatement ps = con.prepareStatement(
-            "SELECT 1 FROM users WHERE user_id = ? AND role = 'OWNER'"
-        );
-        ps.setInt(1, ownerId);
-
-        ResultSet rs = ps.executeQuery();
-
-        boolean exists = rs.next(); 
-
-        con.close();
-        return exists;
-    }
+public interface UserDAO {
+    
+      void viewMySite(int ownerId) throws Exception ;
+      void viewMaintenance(int ownerId) throws Exception ;
+      void payMaintenance(int siteId) throws Exception ;
+      void payMaintenance(int siteId, int amount) throws Exception;
+      void requestSiteUpdate(int siteId, String status) throws Exception ;
+      boolean ownerExists(int id) throws Exception;
 }

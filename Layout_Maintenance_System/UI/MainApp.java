@@ -4,7 +4,9 @@ import java.util.Scanner;
 
 import Service.AdminService;
 import Service.OwnerService;
-import DAO.UserDAO;
+import Utils.AuthUtil;
+import DAO.UserDAOImpl;
+import Entity.Site;
 import Entity.SiteStatus;
 import Entity.SiteType;
 
@@ -15,7 +17,7 @@ public class MainApp {
         try (Scanner sc = new Scanner(System.in)) {
             AdminService admin = new AdminService();
             OwnerService owner = new OwnerService();
-            UserDAO userDAO = new UserDAO();
+           
 
             System.out.println("====== LAYOUT MAINTENANCE SYSTEM ======");
             System.out.println("Login As:");
@@ -26,6 +28,17 @@ public class MainApp {
             int ch = readInt(sc);
 
             if (ch == 1) {
+
+                System.out.print("Enter Admin Password: ");
+                String password = sc.next();
+
+                if (!AuthUtil.validateAdmin(password)) {
+                        System.out.println(" Invalid password. Access denied.");
+                        return; 
+                 }
+
+                    System.out.println(" Admin logged in");
+                
                 int op;
                 do {
                     System.out.println("\n------ ADMIN MENU ------");
@@ -82,23 +95,33 @@ admin.addOwnerWithSitePreference(ownerId, name, type);
                             }
 
                             case 4 -> {
-                                System.out.print("Enter Site Type (VILLA/APARTMENT/INDEPENDENT_HOUSE/OPEN_SITE): ");
-                                SiteType type = SiteType.valueOf(sc.nextLine().trim().toUpperCase());
+                            System.out.print("Enter Site Type (VILLA/APARTMENT/INDEPENDENT_HOUSE/OPEN_SITE): ");
+                            SiteType type = SiteType.valueOf(sc.nextLine().trim().toUpperCase());
 
-                                System.out.print("Enter Length: ");
-                                int len = readInt(sc);
-                                System.out.print("Enter Width: ");
-                                int wid = readInt(sc);
-                                sc.nextLine();
+                            System.out.print("Enter Length: ");
+                            int len = readInt(sc);
 
-                                System.out.print("Enter Status (FREE/OCCUPIED): ");
-                                String status = sc.nextLine().trim();
+                            System.out.print("Enter Width: ");
+                            int wid = readInt(sc);
+                            sc.nextLine(); 
 
-                                System.out.print("Enter Owner ID (0 if none): ");
-                                int ownerId = readInt(sc);
+                            System.out.print("Enter Status (UNOCUPIED/OCCUPIED): ");
+                            SiteStatus status = SiteStatus.valueOf(sc.nextLine().trim().toUpperCase());
 
-admin.addSite(type, len, wid, SiteStatus.valueOf(status), ownerId);
-                            }
+                            System.out.print("Enter Owner ID (0 if none): ");
+                            int ownerId = readInt(sc);
+
+                        
+                            Site site = new Site();
+                            site.setSiteType(type);
+                            site.setLength(len);
+                            site.setWidth(wid);
+                            site.setStatus(status);
+                            site.setOwnerId(ownerId == 0 ? null : ownerId);
+
+                            admin.addSite(site);
+                        }
+
 
                             case 5 -> {
                                 System.out.print("Enter Site ID: ");
@@ -175,7 +198,7 @@ admin.addSite(type, len, wid, SiteStatus.valueOf(status), ownerId);
                 System.out.print("\nEnter Owner ID: ");
                 int oid = readInt(sc);
 
-                if (!userDAO.ownerExists(oid)) {
+                if (!owner.ownerExists(oid)) {
                     System.out.println("Owner does not exist");
                     return;
                 }
@@ -214,10 +237,8 @@ admin.addSite(type, len, wid, SiteStatus.valueOf(status), ownerId);
                                 System.out.print("Enter Payment Amount (enter 0 to mark full paid): ");
                                 int amount = readInt(sc);
                                 if (amount <= 0) {
-                                    // full payment variant
                                     owner.payMaintenance(siteId);
                                 } else {
-                                    // partial payment variant (method overloaded in OwnerService)
                                     owner.payMaintenance(siteId, amount);
                                 }
                             }
