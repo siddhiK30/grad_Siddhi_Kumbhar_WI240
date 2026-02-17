@@ -1,5 +1,6 @@
 package com.example.demo.db2.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -9,8 +10,42 @@ import jakarta.persistence.Table;
 public class Student {
 
 	
-	@Id
+	
 	private int rollid;
+	@Id
+	@Column(name = "reg_no")
+	private int regNo;
+	public int setReg_n0(int regNo){
+		return this.regNo = regNo;
+	}
+	public int getReg_no(){
+		return regNo;
+	}
+
+
+
+	private String gender;
+	public String getGender() {
+		return gender;
+	}
+
+
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+
+
+	private int percentage;
+	public int getPercentage() {
+		return percentage;
+	}
+
+
+	public void setPercentage(int percentage) {
+		this.percentage = percentage;
+	}
+
+
 	private String name;
 	public int getRollid() {
 		return rollid;
