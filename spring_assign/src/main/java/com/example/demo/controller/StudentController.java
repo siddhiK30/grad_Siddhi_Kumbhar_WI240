@@ -27,7 +27,7 @@ public class StudentController {
     @PostMapping
     public String addStudent(@RequestBody Student s) {
 
-        if (repo.existsById(s.getReg_no()))
+        if (repo.existsById(s.getRegNo()))
             return "Student already exists";
 
         repo.save(s);
@@ -74,7 +74,7 @@ public String updateStudent(@PathVariable int regNo,
     if (!repo.existsById(regNo))
         return "Student not found";
 
-    if (s.getReg_no() != regNo)
+    if (s.getRegNo() != regNo)
         return "Registration number mismatch";
 
     repo.save(s);

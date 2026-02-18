@@ -13,14 +13,17 @@ public class Student {
 	
 	private int rollid;
 	@Id
-	@Column(name = "reg_no")
-	private int regNo;
-	public int setReg_n0(int regNo){
-		return this.regNo = regNo;
-	}
-	public int getReg_no(){
-		return regNo;
-	}
+@Column(name = "reg_no")
+private int regNo;
+
+public int getRegNo() {
+    return regNo;
+}
+
+public void setRegNo(int regNo) {
+    this.regNo = regNo;
+}
+
 
 
 
