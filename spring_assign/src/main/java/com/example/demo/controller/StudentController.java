@@ -16,9 +16,11 @@ public class StudentController {
     @Autowired
     private StudentPost repo;
 
+    private List<Student> studentsList;
     @GetMapping
     public List<Student> getAllStudents() {
-        return repo.findAll();
+        studentsList =  repo.findAll();
+        return studentsList;
     }
 
   
@@ -31,24 +33,50 @@ public class StudentController {
             return "Student already exists";
 
         repo.save(s);
+        studentsList =  repo.findAll();
         return "Student inserted successfully";
     }
 
+//     @GetMapping("/school")
+// public List<Student> getBySchool(@RequestParam String name) {
+//     return repo.findBySchoolIgnoreCase(name);
+// }
+
    
-    @GetMapping("/school")
+        @GetMapping("/school")
     public List<Student> getBySchool(@RequestParam String name) {
-        return repo.findBySchoolIgnoreCase(name);
+        return studentsList.stream()
+                .filter(s -> s.getSchool().equalsIgnoreCase(name))
+                .toList();
     }
 
+   
+
+    // @GetMapping("/count")
+    // public long countBySchool(@RequestParam String name) {
+    //     return repo.countBySchool(name);
+    // }
+
+    
     @GetMapping("/count")
-    public long countBySchool(@RequestParam String name) {
-        return repo.countBySchool(name);
-    }
+public long countBySchool(@RequestParam String name) {
+    return studentsList.stream()
+            .filter(s -> s.getSchool().equalsIgnoreCase(name))
+            .count();
+}
+
+
+    // @GetMapping("/school/standard/count")
+    // public long countByStandard(@RequestParam("class") int standard) {
+    //     return repo.countByStandard(standard);
+    // }
 
     @GetMapping("/school/standard/count")
-    public long countByStandard(@RequestParam("class") int standard) {
-        return repo.countByStandard(standard);
-    }
+public long countByStandard(@RequestParam("class") int standard) {
+     return studentsList.stream()
+        .filter(s -> s.getStd() == standard)
+        .count();
+}
 
 
     @GetMapping("/result")
@@ -57,16 +85,35 @@ public class StudentController {
     }
 
    
-    @GetMapping("/strength")
-    public long getStrength(@RequestParam String gender,
-                            @RequestParam int standard) {
-        return repo.countByGenderAndStandard(gender, standard);
-    }
+    // @GetMapping("/strength")
+    // public long getStrength(@RequestParam String gender,
+    //                         @RequestParam int standard) {
+    //     return repo.countByGenderAndStandard(gender, standard);
+    // }
 
-   @GetMapping("/{regNo:\\d+}")
-public Student getStudent(@PathVariable int regNo) {
-    return repo.findById(regNo).orElse(null);
+   @GetMapping("/strength")
+public long getStrength(@RequestParam String gender,
+                        @RequestParam int standard) {
+
+    return studentsList.stream()
+            .filter(s -> s.getStd() == standard &&
+                         s.getGender().equalsIgnoreCase(gender))
+            .count();
 }
+
+//    @GetMapping("/{regNo:\\d+}")
+// public Student getStudent(@PathVariable int regNo) {
+//     return repo.findById(regNo).orElse(null);
+// }
+@GetMapping("/{regNo:\\d+}")
+public Student getStudent(@PathVariable int regNo) {
+
+    return studentsList.stream()
+            .filter(s -> s.getRegNo() == regNo)
+            .findFirst()
+            .orElse(null);
+}
+
 
 @PutMapping("/{regNo:\\d+}")
 public String updateStudent(@PathVariable int regNo,
@@ -78,6 +125,8 @@ public String updateStudent(@PathVariable int regNo,
         return "Registration number mismatch";
 
     repo.save(s);
+    studentsList =  repo.findAll();
+
     return "Student updated successfully";
 }
 
@@ -87,6 +136,8 @@ public String deleteStudent(@PathVariable int regNo) {
         return "Student not found";
 
     repo.deleteById(regNo);
+    studentsList =  repo.findAll();
+
     return "Student deleted successfully";
 }
 
@@ -116,6 +167,8 @@ public String partialUpdate(@PathVariable int regNo,
         existing.setPercentage(updatedData.getPercentage());
 
     repo.save(existing);
+    studentsList =  repo.findAll();
+
 
     return "Student partially updated";
 }
