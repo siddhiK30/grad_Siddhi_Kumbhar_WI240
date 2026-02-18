@@ -9,14 +9,18 @@ import org.springframework.web.bind.annotation.*;
 import com.example.demo.db2.entity.Student;
 import com.example.demo.db2.repo.StudentPost;
 
+import jakarta.transaction.Transactional;
+
 @RestController
 @RequestMapping("/students")
 public class StudentController {
 
     @Autowired
     private StudentPost repo;
+    @Autowired
+    private StudentPost post;
 
-    private List<Student> studentsList;
+    private List<Student> studentsList = repo.findAll();
     @GetMapping
     public List<Student> getAllStudents() {
         studentsList =  repo.findAll();
@@ -27,12 +31,14 @@ public class StudentController {
     
  
     @PostMapping
+    @Transactional
     public String addStudent(@RequestBody Student s) {
 
         if (repo.existsById(s.getRegNo()))
             return "Student already exists";
 
         repo.save(s);
+        post.save(s);
         studentsList =  repo.findAll();
         return "Student inserted successfully";
     }
@@ -125,6 +131,7 @@ public String updateStudent(@PathVariable int regNo,
         return "Registration number mismatch";
 
     repo.save(s);
+    post.save(s)
     studentsList =  repo.findAll();
 
     return "Student updated successfully";
