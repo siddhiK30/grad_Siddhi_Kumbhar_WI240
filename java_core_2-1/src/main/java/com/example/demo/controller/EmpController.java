@@ -68,7 +68,12 @@ public class EmpController {
         return dao.findByAgeGreaterThan(age);
     }
 
-    @RequestMapping("/desgSort")
+    // @RequestMapping("/desgSort")
+    // @ResponseBody
+    // public List<Employee> byDesgSort(String deisgnation) {
+    //     return dao.myOwnQuery(deisgnation);
+    // }
+     @RequestMapping("/desgSort")
     @ResponseBody
     public List<Employee> byDesgSort(String deisgnation) {
         return dao.myOwnQuery(deisgnation);
