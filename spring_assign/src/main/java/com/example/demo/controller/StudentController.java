@@ -29,6 +29,11 @@ public class StudentController {
 
   
     
+//     @GetMapping("/school")
+// public List<Student> getBySchool(@RequestParam String name) {
+//     return repo.findBySchoolIgnoreCase(name);
+// }
+
  
     @PostMapping
     @Transactional
@@ -42,11 +47,6 @@ public class StudentController {
         studentsList =  repo.findAll();
         return "Student inserted successfully";
     }
-
-//     @GetMapping("/school")
-// public List<Student> getBySchool(@RequestParam String name) {
-//     return repo.findBySchoolIgnoreCase(name);
-// }
 
    
         @GetMapping("/school")
