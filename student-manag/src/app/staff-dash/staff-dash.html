@@ -1,0 +1,25 @@
+<h1>Staff Dashboard</h1>
+
+<h2>Student Details</h2>
+
+<table border="1" cellpadding="10">
+
+  <tr>
+    <th>Reg No</th>
+    <th>Roll No</th>
+    <th>Name</th>
+    <th>Standard</th>
+    <th>School</th>
+  </tr>
+
+  <tr *ngFor="let s of students">
+
+    <td>{{s.regNo}}</td>
+    <td>{{s.rollNo}}</td>
+    <td>{{s.name}}</td>
+    <td>{{s.standard}}</td>
+    <td>{{s.school}}</td>
+
+  </tr>
+
+</table>

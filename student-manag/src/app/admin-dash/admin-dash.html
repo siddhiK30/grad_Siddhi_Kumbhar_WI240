@@ -1,0 +1,56 @@
+<h1>Admin Dashboard</h1>
+
+<h2>Add / Update Student</h2>
+
+<form (submit)="saveStudent($event)">
+  
+  <label>Registration No:</label>
+  <input type="text" name="regNo"><br><br>
+
+  <label>Roll No:</label>
+  <input type="text" name="rollNo"><br><br>
+
+  <label>Name:</label>
+  <input type="text" name="name"><br><br>
+
+  <label>Standard:</label>
+  <input type="text" name="standard"><br><br>
+
+  <label>School:</label>
+  <input type="text" name="school"><br><br>
+
+  <button type="submit">Save Student</button>
+
+</form>
+
+<hr>
+
+<h2>Student Records</h2>
+
+<table border="1" cellpadding="10">
+
+  <tr>
+    <th>Reg No</th>
+    <th>Roll No</th>
+    <th>Name</th>
+    <th>Standard</th>
+    <th>School</th>
+    <th>Actions</th>
+  </tr>
+
+  <tr *ngFor="let s of students">
+
+    <td>{{s.regNo}}</td>
+    <td>{{s.rollNo}}</td>
+    <td>{{s.name}}</td>
+    <td>{{s.standard}}</td>
+    <td>{{s.school}}</td>
+
+    <td>
+      <button (click)="editStudent(s)">Update</button>
+      <button (click)="deleteStudent(s.regNo)">Delete</button>
+    </td>
+
+  </tr>
+
+</table>
