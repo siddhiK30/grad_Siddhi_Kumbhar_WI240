@@ -1,0 +1,17 @@
+<form #empForm="ngForm" (ngSubmit)="onSubmit(empForm)">
+
+<input type="text" name="eid"
+placeholder="Enter Id"
+[(ngModel)]="employee.eid"><br>
+
+<input type="text" name="name"
+placeholder="Enter Name"
+[(ngModel)]="employee.name"><br>
+
+<input type="text" name="age"
+placeholder="Enter Age"
+[(ngModel)]="employee.age"><br>
+
+<button type="submit">Add Employee</button>
+
+</form>

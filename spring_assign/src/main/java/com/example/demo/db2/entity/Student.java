@@ -27,6 +27,7 @@ public void setRegNo(int regNo) {
 
 
 
+
 	private String gender;
 	public String getGender() {
 		return gender;

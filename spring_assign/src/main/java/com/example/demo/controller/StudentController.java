@@ -1,9 +1,11 @@
 package com.example.demo.controller;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.demo.db2.entity.Student;
@@ -13,14 +15,14 @@ import jakarta.transaction.Transactional;
 
 @RestController
 @RequestMapping("/students")
+@CrossOrigin(origins = "http://localhost:4200")
 public class StudentController {
 
     @Autowired
     private StudentPost repo;
     @Autowired
     private StudentPost post;
-
-    private List<Student> studentsList = repo.findAll();
+private List<Student> studentsList;
     @GetMapping
     public List<Student> getAllStudents() {
         studentsList =  repo.findAll();
@@ -29,60 +31,67 @@ public class StudentController {
 
   
     
-//     @GetMapping("/school")
-// public List<Student> getBySchool(@RequestParam String name) {
-//     return repo.findBySchoolIgnoreCase(name);
-// }
+    @GetMapping("/school")
+public List<Student> getBySchool(@RequestParam String name) {
+    return repo.findBySchoolIgnoreCase(name);
+}
 
  
-    @PostMapping
-    @Transactional
-    public String addStudent(@RequestBody Student s) {
+    // @PostMapping
+    // @Transactional
+    // public String addStudent(@RequestBody Student s) {
 
-        if (repo.existsById(s.getRegNo()))
-            return "Student already exists";
+    //     if (repo.existsById(s.getRegNo()))
+    //         return "Student already exists";
 
-        repo.save(s);
-        post.save(s);
-        studentsList =  repo.findAll();
-        return "Student inserted successfully";
-    }
-
-   
-        @GetMapping("/school")
-    public List<Student> getBySchool(@RequestParam String name) {
-        return studentsList.stream()
-                .filter(s -> s.getSchool().equalsIgnoreCase(name))
-                .toList();
-    }
-
-   
-
-    // @GetMapping("/count")
-    // public long countBySchool(@RequestParam String name) {
-    //     return repo.countBySchool(name);
+    //     repo.save(s);
+    //     post.save(s);
+    //     studentsList =  repo.findAll();
+    //     return "Student inserted successfully";
     // }
+
+    @PostMapping("/students")
+    @Transactional
+public ResponseEntity<Map<String,String>> addStudent(@RequestBody Student s) {
+    repo.save(s);
+    post.save(s);
+    return ResponseEntity.ok(Map.of("message","Student inserted successfully"));
+}
+   
+    //     @GetMapping("/school")
+    // public List<Student> getBySchool(@RequestParam String name) {
+    //     return studentsList.stream()
+    //             .filter(s -> s.getSchool().equalsIgnoreCase(name))
+    //             .toList();
+    // }
+
+   
+
+    @GetMapping("/count")
+    public long countBySchool(@RequestParam String name) {
+        return repo.countBySchool(name);
+    }
 
     
-    @GetMapping("/count")
-public long countBySchool(@RequestParam String name) {
-    return studentsList.stream()
-            .filter(s -> s.getSchool().equalsIgnoreCase(name))
-            .count();
-}
+//     @GetMapping("/count")
+// public long countBySchool(@RequestParam String name) {
+//     return studentsList.stream()
+//             .filter(s -> s.getSchool().equalsIgnoreCase(name))
+//             .count();
+// }
 
-
-    // @GetMapping("/school/standard/count")
-    // public long countByStandard(@RequestParam("class") int standard) {
-    //     return repo.countByStandard(standard);
-    // }
 
     @GetMapping("/school/standard/count")
-public long countByStandard(@RequestParam("class") int standard) {
-     return studentsList.stream()
-        .filter(s -> s.getStd() == standard)
-        .count();
-}
+    public long countByStandard(@RequestParam("class") int standard) {
+        return repo.countByStandard(standard);
+    }
+
+//     @GetMapping("/school/standard/count")
+// public long countByStandard(@RequestParam("class") int standard) {
+//      return studentsList.stream()
+//         .filter(s -> s.getStd() == standard)
+//         .count();
+// }
 
 
     @GetMapping("/result")
@@ -90,35 +99,36 @@ public long countByStandard(@RequestParam("class") int standard) {
         return repo.findByResult(pass);
     }
 
-   
-    // @GetMapping("/strength")
-    // public long getStrength(@RequestParam String gender,
-    //                         @RequestParam int standard) {
-    //     return repo.countByGenderAndStandard(gender, standard);
-    // }
+   @CrossOrigin(origins = "http://localhost:4200")
+    @GetMapping("/strength")
+    public long getStrength(@RequestParam String gender,
+                            @RequestParam int standard) {
+        return post.countByGenderAndStandard(gender, standard);
+    }
+ 
 
-   @GetMapping("/strength")
-public long getStrength(@RequestParam String gender,
-                        @RequestParam int standard) {
+//    @GetMapping("/strength")
+// public long getStrength(@RequestParam String gender,
+//                         @RequestParam int standard) {
 
-    return studentsList.stream()
-            .filter(s -> s.getStd() == standard &&
-                         s.getGender().equalsIgnoreCase(gender))
-            .count();
-}
-
-//    @GetMapping("/{regNo:\\d+}")
-// public Student getStudent(@PathVariable int regNo) {
-//     return repo.findById(regNo).orElse(null);
+//     return studentsList.stream()
+//             .filter(s -> s.getStd() == standard &&
+//                          s.getGender().equalsIgnoreCase(gender))
+//             .count();
 // }
-@GetMapping("/{regNo:\\d+}")
-public Student getStudent(@PathVariable int regNo) {
 
-    return studentsList.stream()
-            .filter(s -> s.getRegNo() == regNo)
-            .findFirst()
-            .orElse(null);
+   @GetMapping("/{regNo:\\d+}")
+public Student getStudent(@PathVariable int regNo) {
+    return repo.findById(regNo).orElse(null);
 }
+// @GetMapping("/{regNo:\\d+}")
+// public Student getStudent(@PathVariable int regNo) {
+
+//     return studentsList.stream()
+//             .filter(s -> s.getRegNo() == regNo)
+//             .findFirst()
+//             .orElse(null);
+// }
 
 
 @PutMapping("/{regNo:\\d+}")
@@ -131,7 +141,7 @@ public String updateStudent(@PathVariable int regNo,
         return "Registration number mismatch";
 
     repo.save(s);
-    post.save(s)
+    post.save(s);
     studentsList =  repo.findAll();
 
     return "Student updated successfully";
